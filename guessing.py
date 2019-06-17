@@ -6,6 +6,7 @@ import ast
 
 start_url = 'https://australia.national-lottery.com/oz-lotto/results-archive-'
 
+numbers_betting = 9
 
 all_results = []
 for year in range(1994,2020):
@@ -40,12 +41,20 @@ for balls in all_results:
             pair_ball_count[str(pair)] += 1
 
 least_common_pairs = pair_ball_count.most_common()[-50:]
-most_common_pairs = pair_ball_count.most_common()[:720]
+most_common_pairs = pair_ball_count.most_common()[:780]
 least_common_numbers = all_ball_count.most_common()[-14:]
 
 numbers = [x[0] for x in least_common_numbers]
 most_common = [ast.literal_eval(x[0]) for x in most_common_pairs]
 common_pairs_in_numbers = [x for x in most_common if ( (x[0] in numbers) and (x[1] in numbers) )]
-option_to_remove = set([x for i in common_pairs_in_numbers for x in i])
+common_numbers_in_pairs = [x for i in common_pairs_in_numbers for x in i]
+common_numbers_counted = Counter(common_numbers_in_pairs)
+most_common_paired_numbers = [x[0] for x in common_numbers_counted.most_common()]
 
-result = [x for x in numbers if x not in option_to_remove]
+numbers_removed = 14 - numbers_betting
+
+result = [x for x in numbers if x not in most_common_paired_numbers[:numbers_removed]]
+
+# Old result
+# option_to_remove = set([x for i in common_pairs_in_numbers for x in i])
+# result = [x for x in numbers if x not in option_to_remove]
